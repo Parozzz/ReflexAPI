@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import me.parozzz.reflex.NMS.itemStack.ItemNBT;
+import me.parozzz.reflex.NMS.itemStack.NMSStack;
 import me.parozzz.reflex.NMS.nbt.NBTCompound;
 import me.parozzz.reflex.utilities.Util;
 import org.bukkit.Bukkit;
@@ -73,7 +73,7 @@ public class RouletteItem
         Util.ifCheck(!REGISTERED, () -> registerListener());
         
         this.item = item;
-        tag = new ItemNBT(item).getTag();
+        tag = new NMSStack(item).getTag();
     }
     
     public boolean isValid()
@@ -89,7 +89,7 @@ public class RouletteItem
 
         new RouletteInstance(p, u, item, compound.keySet().stream().map(compound::getCompound).flatMap(random -> 
         {
-            ItemNBT nbt = new ItemNBT(random.getCompound(ITEM));
+            NMSStack nbt = new NMSStack(random.getCompound(ITEM));
             nbt.getTag().setString(UID, u.toString());
             return Collections.nCopies(random.getInt(CHANCE), nbt.getBukkitItem()).stream();
         }).collect(Collectors.toList()));
@@ -100,7 +100,7 @@ public class RouletteItem
     
     public static ItemStack createRandom(final ItemStack item, final Map<ItemStack, Integer> map)
     {
-        ItemNBT nbt = new ItemNBT(item);
+        NMSStack nbt = new NMSStack(item);
         NBTCompound tag = nbt.getTag();
         
         NBTCompound randomCompound = new NBTCompound();
@@ -110,7 +110,7 @@ public class RouletteItem
             NBTCompound compound = new NBTCompound();
             compound.setInt(CHANCE, e.getValue());
             
-            compound.setTag(ITEM,  new ItemNBT(e.getKey()).convertToNBT());
+            compound.setTag(ITEM,  new NMSStack(e.getKey()).convertToNBT());
             
             randomCompound.setTag(Objects.toString(key++), compound);
         }

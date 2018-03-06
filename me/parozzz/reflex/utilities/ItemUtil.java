@@ -18,7 +18,7 @@ import me.parozzz.reflex.Debug;
 import me.parozzz.reflex.MCVersion;
 import me.parozzz.reflex.NMS.itemStack.AdventureTag;
 import me.parozzz.reflex.NMS.itemStack.ItemAttributeModifier;
-import me.parozzz.reflex.NMS.itemStack.ItemNBT;
+import me.parozzz.reflex.NMS.itemStack.NMSStack;
 import me.parozzz.reflex.NMS.nbt.NBTCompound;
 import me.parozzz.reflex.configuration.ComplexMapList;
 import me.parozzz.reflex.configuration.MapArray;
@@ -182,7 +182,7 @@ public class ItemUtil
                 item = new ItemStack(Material.MONSTER_EGG);
                 if(MCVersion.V1_9.isEqual() || MCVersion.V1_10.isEqual()) 
                 { 
-                    meta = ItemNBT.setSpawnedType(item, et).getItemMeta(); 
+                    meta = NMSStack.setSpawnedType(item, et).getItemMeta(); 
                 }
                 else 
                 {
@@ -227,7 +227,7 @@ public class ItemUtil
             item.addUnsafeEnchantment(ench, e.getValue());
         });
         
-        ItemNBT nbt=new ItemNBT(item);
+        NMSStack nbt=new NMSStack(item);
         NBTCompound compound=nbt.getTag();
 
         new SimpleMapList(path.getMapList("tag")).getView().forEach((key, value) -> compound.setString(key, value.get(0)));
@@ -235,7 +235,7 @@ public class ItemUtil
         new SimpleMapList(path.getMapList("adventure")).getView().forEach((key, list) -> 
         {
             AdventureTag tag = Debug.validateEnum(key, AdventureTag.class);
-            ItemNBT.setAdventureFlag(compound, tag, Stream.of(list.get(0).split(",")).map(str -> Debug.validateEnum(str, Material.class)).toArray(Material[]::new));
+            NMSStack.setAdventureFlag(compound, tag, Stream.of(list.get(0).split(",")).map(str -> Debug.validateEnum(str, Material.class)).toArray(Material[]::new));
         });
         
         if(path.contains("Attribute"))

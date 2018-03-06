@@ -45,6 +45,11 @@ public class NBTCompound extends NBTBase
         removeKeyMethod = ReflectionUtil.getMethod(compoundClazz, "remove", String.class); //Removed
     }
     
+    public static Object getNewNMSCompound()
+    {
+        return Debug.validateConstructor(constructor);
+    }
+    
     public static Class<?> getNMSClass()
     {
         return compoundClazz;
@@ -228,6 +233,6 @@ public class NBTCompound extends NBTBase
     @Override
     public NBTCompound clone()
     {
-        return (NBTCompound) super.clone();
+        return new NBTCompound(this.nbtBase);
     }
 }

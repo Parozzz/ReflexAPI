@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import me.parozzz.reflex.MCVersion;
-import me.parozzz.reflex.NMS.itemStack.ItemNBT;
+import me.parozzz.reflex.NMS.itemStack.NMSStack;
 import me.parozzz.reflex.utilities.ItemUtil;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -181,7 +181,7 @@ public class ItemBuilder
             }
             else if(MCVersion.contains(MCVersion.V1_10, MCVersion.V1_9)) 
             { 
-                this.egg = ItemNBT.setSpawnedType(egg, et);
+                this.egg = NMSStack.setSpawnedType(egg, et);
                 meta = egg.getItemMeta();
             }
             else 

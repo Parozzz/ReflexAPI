@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -73,6 +75,9 @@ public class Util
             return color;
         }
     }
+    
+    public static final Consumer EMPTY_CONSUMER = obj -> {};
+    public static final BiConsumer EMPTY_BICONSUMER = (obj1, obj2) -> {};
     
     public static EnumSet<BlockFace> cardinals=EnumSet.of(BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH);
     public static void registerArmorStandInvicibleListener()

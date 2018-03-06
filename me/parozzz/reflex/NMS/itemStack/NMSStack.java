@@ -24,7 +24,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  *
  * @author Paros
  */
-public final class ItemNBT implements Cloneable, NMSWrapper
+public final class NMSStack implements Cloneable, NMSWrapper
 {
     private static final Method getTag;
     private static final Method setTag;
@@ -48,19 +48,18 @@ public final class ItemNBT implements Cloneable, NMSWrapper
  
     public static ItemStack setSpawnedType(final ItemStack egg, final EntityType et)
     {
-        ItemNBT nbt=new ItemNBT(egg);
-        NBTCompound compound=nbt.getTag();
+        NMSStackCompound tag = new NMSStackCompound(egg);
         
-        NBTCompound id=new NBTCompound();
+        NBTCompound id = new NBTCompound();
         id.setString("id", et.name());
-        compound.setTag("EntityTag", id);
+        tag.setTag("EntityTag", id);
         
-        return nbt.setTag(compound).getBukkitItem();
+        return tag.getItemStack();
     }
     
     public static void setAdventureFlag(final NBTCompound compound, final AdventureTag tag ,final Material... where)
     {
-        NBTList list=new NBTList();
+        NBTList list = new NBTList();
         for(String str:Stream.of(where)
                 .map(m -> m.name().toLowerCase())
                 .map(str -> (MCVersion.V1_11.isHigher()?"minecraft:":"")+str)
@@ -73,24 +72,24 @@ public final class ItemNBT implements Cloneable, NMSWrapper
     }
     
     private final Object nmsItemStack;
-    public ItemNBT(final Material type)
+    public NMSStack(final Material type)
     {
         this(new ItemStack(type));
     }
     
-    public ItemNBT(final NBTCompound nbt)
+    public NMSStack(final NBTCompound paramCompound)
     {
-        ItemStack item = new ItemStack(Material.valueOf(nbt.getString("id")), nbt.getInt("amount"), nbt.getShort("data"));
+        ItemStack item = new ItemStack(Material.valueOf(paramCompound.getString("id")), paramCompound.getInt("amount"), paramCompound.getShort("data"));
         nmsItemStack = Debug.validateMethod(asNMSCopy, null, item);
-        this.setTag(nbt.getCompound("tag"));
+        this.setTag(paramCompound.getCompound("tag"));
     }
     
-    public ItemNBT(final String str)
+    public NMSStack(final String str)
     {
         this(new NBTCompound(str));
     }
     
-    public ItemNBT(final ItemStack item)
+    public NMSStack(final ItemStack item)
     {
         nmsItemStack = Debug.validateMethod(asNMSCopy, null, item);
     }
@@ -108,26 +107,31 @@ public final class ItemNBT implements Cloneable, NMSWrapper
         return nbt;
     }
     
-    private ItemNBT(final Object nmsItemStack)
+    private NMSStack(final Object nmsItemStack)
     {
         this.nmsItemStack = nmsItemStack;
     }
     
     public NBTCompound getTag()
     {
+        return new NBTCompound(this.getNMSTag());
+    }
+    
+    protected Object getNMSTag()
+    {
         if(!(boolean)Debug.validateMethod(hasTag, nmsItemStack))
         {
-            NBTCompound tag = new NBTCompound();
-            Debug.validateMethod(setTag, nmsItemStack, tag.getNMSObject());
+            Object tag = NBTCompound.getNewNMSCompound();
+            Debug.validateMethod(setTag, nmsItemStack, tag);
             return tag;
         }
         else
         {
-            return new NBTCompound(Debug.validateMethod(getTag, nmsItemStack));
+            return Debug.validateMethod(getTag, nmsItemStack);
         }
     }
     
-    public ItemNBT setTag(final NBTCompound compound)
+    public NMSStack setTag(final NBTCompound compound)
     {
         Debug.validateMethod(setTag, nmsItemStack, compound.getNMSObject());
         return this;
@@ -162,8 +166,8 @@ public final class ItemNBT implements Cloneable, NMSWrapper
     }
     
     @Override
-    public ItemNBT clone()
+    public NMSStack clone()
     {
-        return new ItemNBT(Debug.validateMethod(copyNMSStack, null, nmsItemStack, 1));
+        return new NMSStack(Debug.validateMethod(copyNMSStack, null, nmsItemStack, 1));
     }
 }

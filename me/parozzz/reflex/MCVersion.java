@@ -29,11 +29,19 @@ public enum MCVersion
         this.id = id;
     }
     
+    /**
+     * Check if the version is equal or higher the version you selected
+     * @return True if equal or higher, false otherwise
+     */
     public boolean isHigher()
     {
         return actual().id >= id;
     }
     
+    /**
+     * Check if the version is lower or higher the version you selected
+     * @return True if equal or lower, false otherwise
+     */
     public boolean isLower()
     {
         return actual().id <= id;

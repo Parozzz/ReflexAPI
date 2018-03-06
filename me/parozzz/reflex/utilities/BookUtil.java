@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 import me.parozzz.reflex.MCVersion;
 import me.parozzz.reflex.NMS.ReflectionUtil;
 import me.parozzz.reflex.NMS.entity.EntityPlayer;
-import me.parozzz.reflex.NMS.itemStack.ItemNBT;
+import me.parozzz.reflex.NMS.itemStack.NMSStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -38,7 +38,7 @@ public class BookUtil
                 p.setItemInHand(item);
                 
                 try {
-                    openBook.invoke(EntityPlayer.getNMSPlayer(p).getNMSObject(), new ItemNBT(item).getNMSObject());
+                    openBook.invoke(EntityPlayer.getNMSPlayer(p).getNMSObject(), new NMSStack(item).getNMSObject());
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                     Logger.getLogger(BookUtil.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -59,7 +59,7 @@ public class BookUtil
                 p.getInventory().setItemInMainHand(item);
                 
                 try {
-                    openBook.invoke(EntityPlayer.getNMSPlayer(p).getNMSObject(), new ItemNBT(item).getNMSObject(), enumHand);
+                    openBook.invoke(EntityPlayer.getNMSPlayer(p).getNMSObject(), new NMSStack(item).getNMSObject(), enumHand);
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                     Logger.getLogger(BookUtil.class.getName()).log(Level.SEVERE, null, ex);
                 }

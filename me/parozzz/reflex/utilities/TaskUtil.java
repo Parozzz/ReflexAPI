@@ -17,6 +17,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -57,38 +58,17 @@ public class TaskUtil
      */
     public static BukkitTask scheduleSync(final long delay, final Runnable runnable)
     {
-        return new BukkitRunnable()
-        {
-            @Override
-            public void run() 
-            {
-                runnable.run();
-            }
-        }.runTaskLater(JavaPlugin.getProvidingPlugin(TaskUtil.class), delay);
+        return Bukkit.getScheduler().runTaskLater(JavaPlugin.getProvidingPlugin(TaskUtil.class), runnable, delay);
     }
     
     public static BukkitTask scheduleAsync(final Runnable runnable)
     {
-        return new BukkitRunnable()
-        {
-            @Override
-            public void run() 
-            {
-                runnable.run();
-            }
-        }.runTaskAsynchronously(JavaPlugin.getProvidingPlugin(TaskUtil.class));
+        return Bukkit.getScheduler().runTaskAsynchronously(JavaPlugin.getProvidingPlugin(TaskUtil.class), runnable);
     }
     
     public static BukkitTask scheduleSync(final Runnable runnable)
     {
-        return new BukkitRunnable()
-        {
-            @Override
-            public void run() 
-            {
-                runnable.run();
-            }
-        }.runTask(JavaPlugin.getProvidingPlugin(TaskUtil.class));
+        return Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(TaskUtil.class), runnable);
     }
     
     /**

@@ -11,7 +11,7 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
 import me.parozzz.reflex.MCVersion;
-import me.parozzz.reflex.NMS.itemStack.ItemNBT;
+import me.parozzz.reflex.NMS.itemStack.NMSStack;
 import me.parozzz.reflex.NMS.nbt.NBTCompound;
 import me.parozzz.reflex.builders.FireworkBuilder;
 import org.bukkit.Bukkit;
@@ -156,7 +156,7 @@ public class RouletteInstance extends BukkitRunnable
     
     private boolean sameUUID(final ItemStack item)
     {
-        NBTCompound tag = new ItemNBT(item).getTag();
+        NBTCompound tag = new NMSStack(item).getTag();
         return tag.hasKey(RouletteItem.UID) && u.equals(UUID.fromString(tag.getString(RouletteItem.UID)));
     }
     
@@ -164,7 +164,7 @@ public class RouletteInstance extends BukkitRunnable
     {
         changeItem();
         
-        ItemNBT nbt = new ItemNBT(item);
+        NMSStack nbt = new NMSStack(item);
         nbt.getTag().removeKey(RouletteItem.UID);
         item.setItemMeta(nbt.getBukkitItem().getItemMeta());
         
