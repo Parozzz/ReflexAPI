@@ -34,6 +34,11 @@ public class ReflexAPI extends JavaPlugin
         return JavaPlugin.getPlugin(ReflexAPI.class);
     }
     
+    private static final Logger logger = Logger.getLogger(ReflexAPI.class.getSimpleName());
+    public static Logger logger()
+    {
+        return logger;
+    }
     
     
     @Override

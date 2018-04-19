@@ -19,6 +19,8 @@ import java.util.logging.Logger;
  */
 public class Debug 
 {
+    private static final Logger logger = Logger.getLogger(Debug.class.getName());
+    
     public static boolean debugMode=false;
     
     public static <T extends Enum> T validateEnum(final String name, final Class<T> en)
@@ -44,7 +46,7 @@ public class Debug
         }
         catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) 
         {
-            Logger.getLogger(Debug.class.getName()).log(Level.SEVERE, null, ex);
+            ReflexAPI.logger().log(Level.SEVERE, null, ex);
             return null;
         }
     }
@@ -57,7 +59,7 @@ public class Debug
         } 
         catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) 
         {
-            Logger.getLogger(Debug.class.getName()).log(Level.SEVERE, null, ex);
+            ReflexAPI.logger().log(Level.SEVERE, null, ex);
             return null;
         }
     }
@@ -74,8 +76,13 @@ public class Debug
         } 
         catch (IllegalAccessException | IllegalArgumentException ex) 
         {
-            Logger.getLogger(Debug.class.getName()).log(Level.SEVERE, null, ex);
+            ReflexAPI.logger().log(Level.SEVERE, null, ex);
             return null;
         }
+    }
+    
+    public static void dispatchException(final Exception ex)
+    {
+        ReflexAPI.logger().log(Level.SEVERE, "An error occoured. Contact Parozzz on Spigot for help.", ex);
     }
 }

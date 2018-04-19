@@ -105,157 +105,162 @@ public class ItemUtil
     
     public static ItemStack getItemByPath(final Material id, final short data, final ConfigurationSection path)
     {
-        ItemStack item;
-        ItemMeta meta;
+        try {
+            ItemStack item;
+            ItemMeta meta;
 
-        String type= id==null ? path.getString("id").toUpperCase() : id.name();
-        switch(type)
-        {
-            case "SKULL_ITEM":
-                if(path.contains("url"))
-                {
-                    if(path.getInt("data", data) == 3)
+            String type= id==null ? path.getString("id").toUpperCase() : id.name();
+            switch(type)
+            {
+                case "SKULL_ITEM":
+                    if(path.contains("url"))
                     {
-                        item = new ItemStack(Material.SKULL_ITEM, 1, (short)3);
-                        meta = item.getItemMeta();
-                        HeadUtil.addTexture((SkullMeta)meta, path.getString("url"));
+                        if(path.getInt("data", data) == 3)
+                        {
+                            item = new ItemStack(Material.SKULL_ITEM, 1, (short)3);
+                            meta = item.getItemMeta();
+                            HeadUtil.addTexture((SkullMeta)meta, path.getString("url"));
+                        }
+                        else
+                        {
+                            throw new IllegalArgumentException("You need to set data to 3 for custom url heads");
+                        }
                     }
                     else
                     {
-                        throw new IllegalArgumentException("You need to set data to 3 for custom url heads");
+                        item = new ItemStack(Material.SKULL_ITEM, 1, (short)3);
+                        meta = item.getItemMeta();
                     }
-                }
-                else
-                {
-                    item = new ItemStack(Material.SKULL_ITEM, 1, (short)3);
+                    break;
+                case "SPLASH_POTION":
+                case "POTION":
+                case "LINGERING_POTION":
+                case "TIPPED_ARROW":
+                    if(MCVersion.V1_8.isEqual())
+                    {
+                        Potion potion=new Potion(Debug.validateEnum(path.getString("type", "WATER"), PotionType.class));
+
+                        if(type.equals("SPLASH_POTION"))
+                        {
+                            potion.splash();
+                        }
+
+                        item=potion.toItemStack(1);
+                    }
+                    else
+                    {
+                        item=new ItemStack(Material.valueOf(type));
+                    }
+
+                    meta=item.getItemMeta();
+                    if(path.contains("color") && MCVersion.V1_11.isHigher())
+                    { 
+                        ((PotionMeta)meta).setColor(Debug.validateEnum(path.getString("color"), ColorEnum.class).getBukkitColor()); 
+                    }
+
+                    for(Iterator<String[]> it=path.getStringList("effect").stream().map(str -> str.split(":")).iterator();it.hasNext();)
+                    {
+                        String[] array=it.next();
+
+                        PotionEffectType pet=PotionEffectType.getByName(array[0].toUpperCase());
+                        if(pet==null)
+                        {
+                            throw new IllegalArgumentException("A potion effect named "+array[0]+" does not exist");
+                        }
+                        ((PotionMeta)meta).addCustomEffect(new PotionEffect(pet,Integer.parseInt(array[1]),Integer.parseInt(array[2])), true);
+                    }
+                    break;
+                case "MONSTER_EGG":
+                    EntityType et = Debug.validateEnum(path.getString("data" , "PIG"), EntityType.class);
+
+                    if(MCVersion.V1_8.isEqual()) 
+                    {
+                        item=new SpawnEgg(et).toItemStack(1); 
+                        meta=item.getItemMeta();
+                        break;
+                    }
+
+                    item = new ItemStack(Material.MONSTER_EGG);
+                    if(MCVersion.V1_9.isEqual() || MCVersion.V1_10.isEqual()) 
+                    { 
+                        meta = NMSStack.setSpawnedType(item, et).getItemMeta(); 
+                    }
+                    else 
+                    {
+                        meta = item.getItemMeta();
+                        ((SpawnEggMeta)meta).setSpawnedType(et);   
+                    } 
+                    break;
+                case "LEATHER_BOOTS":
+                case "LEATHER_CHESTPLATE":
+                case "LEATHER_HELMET":
+                case "LEATHER_LEGGINGS":
+                    item = new ItemStack(Material.valueOf(type));
                     meta = item.getItemMeta();
-                }
-                break;
-            case "SPLASH_POTION":
-            case "POTION":
-            case "LINGERING_POTION":
-            case "TIPPED_ARROW":
-                if(MCVersion.V1_8.isEqual())
-                {
-                    Potion potion=new Potion(Debug.validateEnum(path.getString("type", "WATER"), PotionType.class));
 
-                    if(type.equals("SPLASH_POTION"))
+                    if(path.contains("color"))
                     {
-                        potion.splash();
+                        Color c = Debug.validateEnum(path.getString("color"), ColorEnum.class).getBukkitColor();
+                        ((LeatherArmorMeta)meta).setColor(c);
                     }
-                    
-                    item=potion.toItemStack(1);
-                }
-                else
-                {
-                    item=new ItemStack(Material.valueOf(type));
-                }
-
-                meta=item.getItemMeta();
-                if(path.contains("color") && MCVersion.V1_11.isHigher())
-                { 
-                    ((PotionMeta)meta).setColor(Debug.validateEnum(path.getString("color"), ColorEnum.class).getBukkitColor()); 
-                }
-
-                for(Iterator<String[]> it=path.getStringList("effect").stream().map(str -> str.split(":")).iterator();it.hasNext();)
-                {
-                    String[] array=it.next();
-
-                    PotionEffectType pet=PotionEffectType.getByName(array[0].toUpperCase());
-                    if(pet==null)
-                    {
-                        throw new IllegalArgumentException("A potion effect named "+array[0]+" does not exist");
-                    }
-                    ((PotionMeta)meta).addCustomEffect(new PotionEffect(pet,Integer.parseInt(array[1]),Integer.parseInt(array[2])), true);
-                }
-                break;
-            case "MONSTER_EGG":
-                EntityType et = Debug.validateEnum(path.getString("data" , "PIG"), EntityType.class);
-
-                if(MCVersion.V1_8.isEqual()) 
-                {
-                    item=new SpawnEgg(et).toItemStack(1); 
+                    break;
+                default:
+                    item=new ItemStack(Debug.validateEnum(type, Material.class), 1, (short)path.getInt("data", data));
                     meta=item.getItemMeta();
                     break;
-                }
-
-                item = new ItemStack(Material.MONSTER_EGG);
-                if(MCVersion.V1_9.isEqual() || MCVersion.V1_10.isEqual()) 
-                { 
-                    meta = NMSStack.setSpawnedType(item, et).getItemMeta(); 
-                }
-                else 
-                {
-                    meta = item.getItemMeta();
-                    ((SpawnEggMeta)meta).setSpawnedType(et);   
-                } 
-                break;
-            case "LEATHER_BOOTS":
-            case "LEATHER_CHESTPLATE":
-            case "LEATHER_HELMET":
-            case "LEATHER_LEGGINGS":
-                item = new ItemStack(Material.valueOf(type));
-                meta = item.getItemMeta();
-                
-                if(path.contains("color"))
-                {
-                    Color c = Debug.validateEnum(path.getString("color"), ColorEnum.class).getBukkitColor();
-                    ((LeatherArmorMeta)meta).setColor(c);
-                }
-                break;
-            default:
-                item=new ItemStack(Debug.validateEnum(type, Material.class), 1, (short)path.getInt("data", data));
-                meta=item.getItemMeta();
-                break;
-        }
-        
-        meta.setDisplayName(Util.cc(path.getString("name", "")));
-        meta.setLore(path.getStringList("lore").stream().map(Util::cc).collect(Collectors.toList()));
-        meta.addItemFlags(path.getStringList("flag").stream().map(str -> Debug.validateEnum(str, ItemFlag.class)).toArray(ItemFlag[]::new));
-        setUnbreakable(meta, path.getBoolean("unbreakable", false));
-
-        item.setItemMeta(meta);
-        item.setAmount(path.getInt("amount", 1));
-
-        path.getMapList("enchant").stream().map(map -> (Map<String, Integer>)map).map(Map::entrySet).flatMap(Set::stream).forEach(e -> 
-        {
-            Enchantment ench=Enchantment.getByName(e.getKey().toUpperCase());
-            if(ench==null)
-            {
-                throw new IllegalArgumentException("An enchantment with name "+e.getKey()+" does not exist");
             }
-            item.addUnsafeEnchantment(ench, e.getValue());
-        });
-        
-        NMSStack nbt=new NMSStack(item);
-        NBTCompound compound=nbt.getTag();
 
-        new SimpleMapList(path.getMapList("tag")).getView().forEach((key, value) -> compound.setString(key, value.get(0)));
-        
-        new SimpleMapList(path.getMapList("adventure")).getView().forEach((key, list) -> 
-        {
-            AdventureTag tag = Debug.validateEnum(key, AdventureTag.class);
-            NMSStack.setAdventureFlag(compound, tag, Stream.of(list.get(0).split(",")).map(str -> Debug.validateEnum(str, Material.class)).toArray(Material[]::new));
-        });
-        
-        if(path.contains("Attribute"))
-        {
-            ItemAttributeModifier modifier=new ItemAttributeModifier();
-            new ComplexMapList(path.getMapList("Attribute")).getView().forEach((attr, list) -> 
+            meta.setDisplayName(Util.cc(path.getString("name", "")));
+            meta.setLore(path.getStringList("lore").stream().map(Util::cc).collect(Collectors.toList()));
+            meta.addItemFlags(path.getStringList("flag").stream().map(str -> Debug.validateEnum(str, ItemFlag.class)).toArray(ItemFlag[]::new));
+            setUnbreakable(meta, path.getBoolean("unbreakable", false));
+
+            item.setItemMeta(meta);
+            item.setAmount(path.getInt("amount", 1));
+
+            path.getMapList("enchant").stream().map(map -> (Map<String, Integer>)map).map(Map::entrySet).flatMap(Set::stream).forEach(e -> 
             {
-                ItemAttributeModifier.ItemAttribute attribute=Debug.validateEnum(attr, ItemAttributeModifier.ItemAttribute.class);
-                
-                MapArray map = list.get(0);
-                double value = map.getValue("value", Double::valueOf);
-                ItemAttributeModifier.Operation op=ItemAttributeModifier.Operation.getById(map.getValue("operation", Integer::valueOf));
-                ItemAttributeModifier.AttributeSlot slot=Debug.validateEnum(Optional.ofNullable(map.getValue("slot", Function.identity())).orElse("MAINHAND"), ItemAttributeModifier.AttributeSlot.class);
-
-                modifier.addModifier(slot, attribute, op, value);
+                Enchantment ench=Enchantment.getByName(e.getKey().toUpperCase());
+                if(ench==null)
+                {
+                    throw new IllegalArgumentException("An enchantment with name "+e.getKey()+" does not exist");
+                }
+                item.addUnsafeEnchantment(ench, e.getValue());
             });
-            modifier.apply(compound);
+
+            NMSStack nbt=new NMSStack(item);
+            NBTCompound compound=nbt.getTag();
+
+            new SimpleMapList(path.getMapList("tag")).getView().forEach((key, value) -> compound.setString(key, value.get(0)));
+
+            new SimpleMapList(path.getMapList("adventure")).getView().forEach((key, list) -> 
+            {
+                AdventureTag tag = Debug.validateEnum(key, AdventureTag.class);
+                NMSStack.setAdventureFlag(compound, tag, Stream.of(list.get(0).split(",")).map(str -> Debug.validateEnum(str, Material.class)).toArray(Material[]::new));
+            });
+
+            if(path.contains("Attribute"))
+            {
+                ItemAttributeModifier modifier=new ItemAttributeModifier();
+                new ComplexMapList(path.getMapList("Attribute")).getView().forEach((attr, list) -> 
+                {
+                    ItemAttributeModifier.ItemAttribute attribute=Debug.validateEnum(attr, ItemAttributeModifier.ItemAttribute.class);
+
+                    MapArray map = list.get(0);
+                    double value = map.getValue("value", Double::valueOf);
+                    ItemAttributeModifier.Operation op=ItemAttributeModifier.Operation.getById(map.getValue("operation", Integer::valueOf));
+                    ItemAttributeModifier.AttributeSlot slot=Debug.validateEnum(Optional.ofNullable(map.getValue("slot", Function.identity())).orElse("MAINHAND"), ItemAttributeModifier.AttributeSlot.class);
+
+                    modifier.addModifier(slot, attribute, op, value);
+                });
+                modifier.apply(compound);
+            }
+
+            return nbt.setTag(compound).getBukkitItem();
+        } catch(final Exception ex) {
+            Debug.dispatchException(ex);
+            return null;
         }
-        
-        return nbt.setTag(compound).getBukkitItem();
     }
     
     public static void parseItemVariable(final ItemStack item, final String placeholder, final Object replace)
