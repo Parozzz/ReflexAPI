@@ -29,7 +29,7 @@ public class Debug
         {
             try 
             {
-                return (T)Enum.valueOf(en, s); 
+                return (T)Enum.valueOf(en, s);
             }
             catch(final IllegalArgumentException t)
             {

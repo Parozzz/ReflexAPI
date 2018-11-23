@@ -105,7 +105,7 @@ public class HeadUtil
     
     public static ItemStack createHead(final String url)
     {
-        return addTexture(new ItemStack(Material.SKULL_ITEM, 1, (short)3), url);
+        return addTexture(new ItemStack(Material.LEGACY_SKULL_ITEM, 1, (short)3), url);
     }
     
     public static ItemStack addTexture(final ItemStack item, final String url)

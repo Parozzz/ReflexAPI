@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ReflexAPI:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ReflexAPI_jar</output-path>
+    <root id="archive" name="ReflexAPI.jar">
+      <element id="module-output" name="ReflexAPI" />
+      <element id="file-copy" path="$PROJECT_DIR$/Resources/plugin.yml" />
+    </root>
+  </artifact>
+</component>

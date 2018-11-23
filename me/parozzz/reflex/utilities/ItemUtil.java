@@ -117,7 +117,7 @@ public class ItemUtil
                     {
                         if(path.getInt("data", data) == 3)
                         {
-                            item = new ItemStack(Material.SKULL_ITEM, 1, (short)3);
+                            item = new ItemStack(Material.LEGACY_SKULL_ITEM, 1, (short)3);
                             meta = item.getItemMeta();
                             HeadUtil.addTexture((SkullMeta)meta, path.getString("url"));
                         }
@@ -128,7 +128,7 @@ public class ItemUtil
                     }
                     else
                     {
-                        item = new ItemStack(Material.SKULL_ITEM, 1, (short)3);
+                        item = new ItemStack(Material.LEGACY_SKULL_ITEM, 1, (short)3);
                         meta = item.getItemMeta();
                     }
                     break;
@@ -180,7 +180,7 @@ public class ItemUtil
                         break;
                     }
 
-                    item = new ItemStack(Material.MONSTER_EGG);
+                    item = new ItemStack(Material.LEGACY_MONSTER_EGG);
                     if(MCVersion.V1_9.isEqual() || MCVersion.V1_10.isEqual()) 
                     { 
                         meta = NMSStack.setSpawnedType(item, et).getItemMeta(); 

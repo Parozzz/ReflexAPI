@@ -166,7 +166,7 @@ public class ItemBuilder
         private final ItemStack egg;
         public EggBuilder(final ItemStack egg, final EntityType et)
         {
-            if(egg.getType()!=Material.MONSTER_EGG)
+            if(egg.getType()!=Material.LEGACY_MONSTER_EGG)
             {
                 throw new IllegalArgumentException("The item in the builder is not a monster egg");
             }
@@ -204,7 +204,7 @@ public class ItemBuilder
         private final ItemStack skull;
         public SkullBuilder(final ItemStack skull) 
         {
-            if(skull.getType()!=Material.SKULL_ITEM && skull.getDurability()!=3)
+            if(skull.getType()!=Material.LEGACY_SKULL_ITEM && skull.getDurability()!=3)
             {
                 throw new IllegalArgumentException("The item in the builder is not a player head");
             }

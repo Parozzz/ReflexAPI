@@ -23,7 +23,7 @@ public class ParticlePacket extends Packet
     private final static Constructor<?> constructor;
     static
     {
-        particleEnumClazz = ReflectionUtil.getNMSClass("EnumParticle");
+        particleEnumClazz = ReflectionUtil.getNMSClass("Particles");
         
         constructor = ReflectionUtil.getConstructor(ReflectionUtil.getNMSClass("PacketPlayOutWorldParticles"),
                 particleEnumClazz, boolean.class,

@@ -19,7 +19,8 @@ public enum MCVersion
     V1_9("1.9", (byte)2), 
     V1_10("1.10", (byte)3), 
     V1_11("1.11", (byte)4), 
-    V1_12("1.12", (byte)5);
+    V1_12("1.12", (byte)5),
+    V1_13("1.13", (byte)6);
     
     private final String ver;
     private final byte id;

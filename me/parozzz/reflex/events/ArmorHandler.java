@@ -17,28 +17,6 @@ import me.parozzz.reflex.events.armor.ArmorUnequipEvent;
 import me.parozzz.reflex.events.armor.ArmorUnequipEvent.Cause;
 import me.parozzz.reflex.utilities.Util;
 import org.bukkit.Material;
-import static org.bukkit.Material.CHAINMAIL_BOOTS;
-import static org.bukkit.Material.CHAINMAIL_CHESTPLATE;
-import static org.bukkit.Material.CHAINMAIL_HELMET;
-import static org.bukkit.Material.CHAINMAIL_LEGGINGS;
-import static org.bukkit.Material.DIAMOND_BOOTS;
-import static org.bukkit.Material.DIAMOND_CHESTPLATE;
-import static org.bukkit.Material.DIAMOND_HELMET;
-import static org.bukkit.Material.DIAMOND_LEGGINGS;
-import static org.bukkit.Material.GOLD_BOOTS;
-import static org.bukkit.Material.GOLD_CHESTPLATE;
-import static org.bukkit.Material.GOLD_HELMET;
-import static org.bukkit.Material.GOLD_LEGGINGS;
-import static org.bukkit.Material.IRON_BOOTS;
-import static org.bukkit.Material.IRON_CHESTPLATE;
-import static org.bukkit.Material.IRON_HELMET;
-import static org.bukkit.Material.IRON_LEGGINGS;
-import static org.bukkit.Material.LEATHER_BOOTS;
-import static org.bukkit.Material.LEATHER_CHESTPLATE;
-import static org.bukkit.Material.LEATHER_HELMET;
-import static org.bukkit.Material.LEATHER_LEGGINGS;
-import static org.bukkit.Material.PUMPKIN;
-import static org.bukkit.Material.SKULL_ITEM;
 import org.bukkit.block.Block;
 import org.bukkit.block.Jukebox;
 import org.bukkit.entity.Player;
@@ -61,6 +39,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import static org.bukkit.Material.*;
 
 /**
  *
@@ -85,10 +65,10 @@ public class ArmorHandler implements Listener
         rawSlots.put(7, EquipmentSlot.LEGS); 
         rawSlots.put(8, EquipmentSlot.FEET);
         
-        Stream.of(LEATHER_HELMET, CHAINMAIL_HELMET, GOLD_HELMET, IRON_HELMET, DIAMOND_HELMET, SKULL_ITEM, PUMPKIN).forEach(m -> armors.put(m, new Armor(39, EquipmentSlot.HEAD)));
-        Stream.of(LEATHER_CHESTPLATE, CHAINMAIL_CHESTPLATE, GOLD_CHESTPLATE, IRON_CHESTPLATE, DIAMOND_CHESTPLATE).forEach(m -> armors.put(m, new Armor(38, EquipmentSlot.CHEST)));
-        Stream.of(LEATHER_LEGGINGS, CHAINMAIL_LEGGINGS, GOLD_LEGGINGS, IRON_LEGGINGS, DIAMOND_LEGGINGS).forEach(m -> armors.put(m, new Armor(37, EquipmentSlot.LEGS)));
-        Stream.of(LEATHER_BOOTS, CHAINMAIL_BOOTS, GOLD_BOOTS, IRON_BOOTS, DIAMOND_BOOTS).forEach(m -> armors.put(m, new Armor(36, EquipmentSlot.FEET)));
+        Stream.of(LEATHER_HELMET, CHAINMAIL_HELMET, LEGACY_GOLD_HELMET, IRON_HELMET, DIAMOND_HELMET, LEGACY_SKULL_ITEM, PUMPKIN).forEach(m -> armors.put(m, new Armor(39, EquipmentSlot.HEAD)));
+        Stream.of(LEATHER_CHESTPLATE, CHAINMAIL_CHESTPLATE, LEGACY_GOLD_CHESTPLATE, IRON_CHESTPLATE, DIAMOND_CHESTPLATE).forEach(m -> armors.put(m, new Armor(38, EquipmentSlot.CHEST)));
+        Stream.of(LEATHER_LEGGINGS, CHAINMAIL_LEGGINGS, LEGACY_GOLD_LEGGINGS, IRON_LEGGINGS, DIAMOND_LEGGINGS).forEach(m -> armors.put(m, new Armor(37, EquipmentSlot.LEGS)));
+        Stream.of(LEATHER_BOOTS, CHAINMAIL_BOOTS, LEGACY_GOLD_BOOTS, IRON_BOOTS, DIAMOND_BOOTS).forEach(m -> armors.put(m, new Armor(36, EquipmentSlot.FEET)));
     
         Stream.of(Material.values()).forEach(m -> 
         {
@@ -112,32 +92,32 @@ public class ArmorHandler implements Listener
                     //Inventory Holders
                     case CHEST:
                     case TRAPPED_CHEST:
-                    case ENCHANTMENT_TABLE:
+                    case LEGACY_ENCHANTMENT_TABLE:
                     case ANVIL:
                     case BREWING_STAND:
-                    case WORKBENCH:
+                    case LEGACY_WORKBENCH:
                     case DISPENSER:
                     case DROPPER:
                     case FURNACE:
-                    case BURNING_FURNACE:
+                    case LEGACY_BURNING_FURNACE:
                     case ENDER_CHEST:
                     case BEACON:
                     case HOPPER:
                     //Bed
-                    case BED:
-                    case BED_BLOCK:
+                    case LEGACY_BED:
+                    case LEGACY_BED_BLOCK:
                     //Redstone related
-                    case WOOD_BUTTON:
+                    case LEGACY_WOOD_BUTTON:
                     case STONE_BUTTON:
                     case TRIPWIRE_HOOK:
                     case DAYLIGHT_DETECTOR:
-                    case DAYLIGHT_DETECTOR_INVERTED:
-                    case DIODE:
-                    case DIODE_BLOCK_OFF:
-                    case DIODE_BLOCK_ON:
-                    case REDSTONE_COMPARATOR:
-                    case REDSTONE_COMPARATOR_OFF:
-                    case REDSTONE_COMPARATOR_ON:
+                    case LEGACY_DAYLIGHT_DETECTOR_INVERTED:
+                    case LEGACY_DIODE:
+                    case LEGACY_DIODE_BLOCK_OFF:
+                    case LEGACY_DIODE_BLOCK_ON:
+                    case LEGACY_REDSTONE_COMPARATOR:
+                    case LEGACY_REDSTONE_COMPARATOR_OFF:
+                    case LEGACY_REDSTONE_COMPARATOR_ON:
                         clickable.add(m);
                         break;
                 }
@@ -167,7 +147,7 @@ public class ArmorHandler implements Listener
     {
         Optional.ofNullable(e.getItem())
                 .map(ItemStack::getType)
-                .filter(m -> m != Material.SKULL_ITEM)
+                .filter(m -> m != Material.LEGACY_SKULL_ITEM)
                 .flatMap(m -> Optional.ofNullable(armors.get(m)))
                 .filter(armor -> getSlot(e.getPlayer().getEquipment(), armor.getEquipmentSlot()) == null)
                 .ifPresent(armor -> 
