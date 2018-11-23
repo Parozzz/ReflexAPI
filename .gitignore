@@ -18,3 +18,8 @@ out/
 .idea/vcs.xml
 .idea/dataSources.xml
 .idea/dataSources.local.xml
+/bin/
+/target/
+/.settings/
+/.classpath
+/.project
